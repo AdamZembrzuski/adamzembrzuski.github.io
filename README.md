@@ -1,2 +1,1 @@
-# adamzembrzuski.github.io
-My personal portfolio
+This is a personal portfolio website for my projects.

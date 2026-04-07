@@ -75,14 +75,20 @@
     border-bottom: 1px solid var(--border);
     position: relative; overflow: hidden;
   }
+
   .hero::before {
     content: '';
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 55% 60% at 80% 10%, rgba(232,184,122,0.09) 0%, transparent 65%),
-      radial-gradient(ellipse 40% 50% at 20% 90%, rgba(180,130,80,0.04) 0%, transparent 60%);
+    position: absolute;
+    top: -20%;
+    right: -15%;
+    width: 70%;
+    height: 130%;
+    background: radial-gradient(circle at 80% 20%, rgba(232,184,122,0.12) 0%, rgba(232,184,122,0) 70%);
+    filter: blur(70px);
     pointer-events: none;
+    z-index: 0;
   }
+
   .hero-label {
     font-family: var(--mono); font-size: 11px; font-weight: 500;
     color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
@@ -296,6 +302,7 @@
     .hero-stats { gap: 2rem; }
     nav .nav-links { display: none; }
   }
+
 </style>
 </head>
 <body>
@@ -550,7 +557,8 @@
 
 <div class="container">
   <footer>
-    <p>© 2026 Adam Zembrzuski · "necessity isn't the mother of <strong>my</strong> invention"</p>
+    <!-- Year auto-updates, quote and formatting preserved -->
+    <p>© <span id="currentYear"></span> Adam Zembrzuski · "necessity isn't the mother of <strong>my</strong> invention"</p>
     <div class="footer-links">
       <a href="https://github.com/AdamZembrzuski" target="_blank">GitHub</a>
       <a href="https://www.linkedin.com/in/adam-zembrzuski/" target="_blank">LinkedIn</a>
@@ -567,6 +575,9 @@
     });
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Auto-update footer year
+  document.getElementById('currentYear').innerText = new Date().getFullYear();
 
   // Smooth Carousel Logic
   const track = document.getElementById('statsTrack');

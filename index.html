@@ -44,7 +44,7 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ─── progress bar (new) ─── */
+  /* ─── progress bar ─── */
   .progress-bar {
     position: fixed;
     top: 0;
@@ -60,16 +60,19 @@
   /* ─── Layout ─── */
   .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
 
-  /* ─── Nav (glassmorphic, rounded, new) ─── */
+  /* ─── Nav (full width, square corners) ─── */
   nav {
     position: sticky;
     top: 12px;
+    left: 0;
+    right: 0;
     z-index: 100;
-    margin: 0 1rem;
-    border-radius: 48px;
+    margin: 0;                      /* stretch to edges */
+    border-radius: 0;
     background: rgba(14,14,14,0.7);
     backdrop-filter: blur(16px);
-    border: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     transition: all 0.3s;
   }
   nav .inner {
@@ -209,7 +212,7 @@
     color: var(--text); line-height: 1.2;
   }
 
-  /* ─── Project cards (less rounded, gold glow on hover) ─── */
+  /* ─── Project cards ─── */
   .projects-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5px; margin: 0 -1px;
@@ -621,7 +624,7 @@
     document.querySelector('.progress-bar').style.width = scrolled + '%';
   });
 
-  // Smooth Carousel Logic (original, no hover changes needed)
+  // Smooth Carousel Logic
   const track = document.getElementById('statsTrack');
   
   const scrollAnim = track.animate([

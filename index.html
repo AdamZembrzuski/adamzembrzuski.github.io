@@ -44,17 +44,19 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ─── progress bar ─── */
+  /* ─── progress bar (now on top of nav) ─── */
   .progress-bar {
     position: fixed;
-    top: 0;
+    top: 12px;                     /* aligns with nav bar */
     left: 0;
+    right: 0;
     width: 0%;
     height: 3px;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
-    z-index: 1001;
+    z-index: 1001;                 /* above nav (z-index: 100) */
     transition: width 0.1s ease-out;
     box-shadow: 0 0 6px var(--accent-glow);
+    pointer-events: none;          /* allows clicks to pass through to nav */
   }
 
   /* ─── Layout ─── */
@@ -67,7 +69,7 @@
     left: 0;
     right: 0;
     z-index: 100;
-    margin: 0;                      /* stretch to edges */
+    margin: 0;
     border-radius: 0;
     background: rgba(14,14,14,0.7);
     backdrop-filter: blur(16px);
@@ -342,7 +344,7 @@
 </head>
 <body>
 
-<!-- progress bar element -->
+<!-- progress bar (now on top of nav) -->
 <div class="progress-bar"></div>
 
 <nav>

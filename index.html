@@ -25,6 +25,7 @@
     --text3: #555550;
     --accent: #e8b87a;
     --accent2: #d4956a;
+    --accent-glow: rgba(232,184,122,0.25);
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'DM Sans', sans-serif;
     --serif: 'DM Serif Display', serif;
@@ -43,20 +44,41 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* ─── progress bar (new) ─── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    z-index: 1001;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 6px var(--accent-glow);
+  }
+
   /* ─── Layout ─── */
   .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
 
-  /* ─── Nav ─── */
+  /* ─── Nav (glassmorphic, rounded, new) ─── */
   nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(14,14,14,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 0;
+    position: sticky;
+    top: 12px;
+    z-index: 100;
+    margin: 0 1rem;
+    border-radius: 48px;
+    background: rgba(14,14,14,0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    transition: all 0.3s;
   }
   nav .inner {
-    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
-    display: flex; align-items: center; justify-content: space-between;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .nav-brand {
     font-family: var(--mono); font-size: 13px; font-weight: 500;
@@ -103,6 +125,8 @@
   .hero-sub {
     font-size: 1.1rem; color: var(--text2); max-width: 520px;
     line-height: 1.6; margin-bottom: 2.5rem; font-weight: 300;
+    border-left: 2px solid var(--accent);
+    padding-left: 1.2rem;
   }
   .hero-links { display: flex; gap: 1rem; flex-wrap: wrap; }
   .btn {
@@ -122,7 +146,7 @@
   }
   .btn-outline:hover { color: var(--text); border-color: var(--text2); }
 
-/* ─── Scrolling stats ─── */
+  /* ─── Scrolling stats (no hover effect) ─── */
   .hero-stats {
     margin-top: 4rem;
     border-top: 1px solid var(--border); 
@@ -130,7 +154,6 @@
     overflow: hidden; 
     position: relative;
     
-    /* This creates the smooth fade-off on both edges */
     -webkit-mask-image: linear-gradient(
       to right, 
       transparent, 
@@ -147,14 +170,20 @@
     );
   }
   
-
   .stats-track {
     display: flex; gap: 4rem;
     width: max-content;
-    /* Removed CSS animation to handle it in JS */
   }
   
-  .stat-item { display: flex; flex-direction: column; gap: 4px; min-width: 120px; }
+  .stat-item {
+    display: flex; flex-direction: column; gap: 4px; min-width: 120px;
+    border: 1px solid transparent;
+    border-radius: 40px;
+    padding: 0.2rem 0.8rem;
+    transition: all 0.2s ease;
+    cursor: default;
+  }
+  /* hover glow and border removed */
   .stat-num {
     font-family: var(--mono); font-size: 1.5rem; font-weight: 500;
     color: var(--accent); display: block;
@@ -180,17 +209,21 @@
     color: var(--text); line-height: 1.2;
   }
 
-  /* ─── Project cards ─── */
+  /* ─── Project cards (less rounded, gold glow on hover) ─── */
   .projects-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5px; margin: 0 -1px;
   }
   .project-card {
     background: var(--bg2); border: 1px solid var(--border);
-    overflow: hidden; transition: border-color 0.2s;
+    overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
     display: flex; flex-direction: column;
+    border-radius: 4px;
   }
-  .project-card:hover { border-color: var(--border-hi); }
+  .project-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px -8px rgba(232,184,122,0.3), 0 0 0 1px rgba(232,184,122,0.2);
+  }
   .project-card:hover .card-img img { transform: scale(1.03); }
 
   .card-img {
@@ -250,7 +283,6 @@
   .about-text p { color: var(--text2); margin-bottom: 1rem; font-size: 15px; line-height: 1.75; }
   .about-text p strong { color: var(--text); font-weight: 500; }
 
-  /* Arkwright badge */
   .award-badge {
     display: inline-flex; align-items: center; gap: 8px;
     border: 1px solid rgba(232,184,122,0.3);
@@ -306,6 +338,9 @@
 </style>
 </head>
 <body>
+
+<!-- progress bar element -->
+<div class="progress-bar"></div>
 
 <nav>
   <div class="inner">
@@ -557,7 +592,6 @@
 
 <div class="container">
   <footer>
-    <!-- Year auto-updates, quote and formatting preserved -->
     <p>© <span id="currentYear"></span> Adam Zembrzuski · "necessity isn't the mother of <strong>my</strong> invention"</p>
     <div class="footer-links">
       <a href="https://github.com/AdamZembrzuski" target="_blank">GitHub</a>
@@ -579,10 +613,17 @@
   // Auto-update footer year
   document.getElementById('currentYear').innerText = new Date().getFullYear();
 
-  // Smooth Carousel Logic
+  // Progress bar scroll handler
+  window.addEventListener('scroll', () => {
+    const winScroll = document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = (winScroll / height) * 100;
+    document.querySelector('.progress-bar').style.width = scrolled + '%';
+  });
+
+  // Smooth Carousel Logic (original, no hover changes needed)
   const track = document.getElementById('statsTrack');
   
-  // Create the animation using the Web Animations API
   const scrollAnim = track.animate([
     { transform: 'translateX(0)' },
     { transform: 'translateX(-50%)' }
@@ -594,7 +635,6 @@
 
   let hoverInterval;
   
-  // Smoothly decrease speed on hover
   track.addEventListener('mouseenter', () => {
     clearInterval(hoverInterval);
     hoverInterval = setInterval(() => {
@@ -607,7 +647,6 @@
     }, 20); 
   });
 
-  // Smoothly increase speed on mouse leave
   track.addEventListener('mouseleave', () => {
     clearInterval(hoverInterval);
     hoverInterval = setInterval(() => {
